@@ -4,13 +4,24 @@
     value="￥ 32,039,165"
   >
     <template>
-      <div class="compare">
-
+      <div class="compare-wrapper">
+        <div class="compare">
+          <span>日同比</span>
+          <!--          引用的是commonCard的样式，没有scoped限制-->
+          <span class="emphasis">7.33%</span>
+          <!--          小三角形可以用CSS实现或者SVG，CSS实现比较快-->
+          <div class="increase"/>
+        </div>
+        <div class="compare">
+          <span>月同比</span>
+          <span class="emphasis">7.33%</span>
+          <div class="decrease"/>
+        </div>
       </div>
     </template>
     <template v-slot:footer>
-      <span>昨日销售额</span>
-      <span class="money">￥30,000,000</span>
+      <span>昨日销售额 </span>
+      <span class="emphasis">￥30,000,000</span>
     </template>
   </common-card>
 </template>
@@ -29,18 +40,18 @@
 
 <style lang="scss" scoped>
 
-  .compare {
+  .compare-wrapper {
     height: 100%;
-    background: yellow;
-  }
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 
-  span {
-    font-size: 12px;
-  }
-
-  .money {
-    margin-left: 5px;
-    color: #333;
-    font-weight: 700;
+    .compare {
+      display: flex;
+      align-items: center;
+      font-size: 12px;
+      margin-top: 3px;
+      color: #666;
+    }
   }
 </style>

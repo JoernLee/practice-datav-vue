@@ -39,7 +39,6 @@
 
   .chart {
     height: 50px;
-    background: red;
   }
 
   .line {
@@ -52,4 +51,35 @@
     color: #666;
   }
 
+</style>
+
+<!--这里新增一个公共样式组，不要加scoped，就会变成全局样式，方便其他组件使用-->
+<style lang="scss">
+  .emphasis {
+    margin-left: 5px;
+    color: #333;
+    font-weight: 700;
+  }
+
+  .increase {
+    width: 0;
+    height: 0;
+    /*完全基于border实现三角*/
+    border-width: 3px;
+    /*向下角设置为red，其他都是透明色，下方border占据上方*/
+    border-color: transparent transparent red transparent;
+    border-style: solid;
+    margin: 0 0 3px 5px;
+  }
+
+  .decrease {
+    width: 0;
+    height: 0;
+    /*完全基于border实现三角*/
+    border-width: 3px;
+    /*向下角设置为red，其他都是透明色，下方border占据上方*/
+    border-color: green transparent transparent transparent;
+    border-style: solid;
+    margin: 3px 0 0 5px;
+  }
 </style>
