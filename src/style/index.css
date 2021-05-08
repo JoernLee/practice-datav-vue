@@ -2,3 +2,9 @@
     width: 100%;
     height: 100%;
 }
+
+/*不需要默认的样式，影响销售趋势的menu*/
+.el-card__header {
+    border-bottom: none;
+    padding: 0;
+}
