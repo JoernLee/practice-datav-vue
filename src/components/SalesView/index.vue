@@ -1,6 +1,6 @@
 <template>
   <div class="sales-view">
-    <el-card shadow="hover">
+    <el-card shadow="hover" :body-style="{padding: '0 0 20px 0'}">
       <!--        card-header部分内容,为什么使用header插槽可以直接看el-card源码，很清楚-->
       <template v-slot:header>
         <div class="menu-wrapper">
@@ -35,10 +35,25 @@
           </div>
         </div>
       </template>
-      <!--        默认template会放入card主题区域-->
+      <!--默认template会放入card主题区域-->
       <template>
-        <div>
-          222
+        <div class="sales-view-chart-wrapper">
+          <v-chart :options="chartOption"/>
+          <div class="sales-view-list">
+            <div class="sales-view-title">
+              排行榜
+            </div>
+            <div class="list-item-wrapper">
+              <div class="list-item" v-for="item in rankData" :key="item.no">
+                <!--这里排行榜前3需要有额外样式，第一种可以像下面这样通过条件判断来处理-->
+                <!--              <div class="list-item-no" :class="+item.no <= 3 ? 'top-no': ''">{{item.no}}</div>-->
+                <!--              还可以通过class高级使用来写，下面这样，其实就是把上面写法合并了-->
+                <div :class="['list-item-no',+item.no <= 3 ? 'top-no': '']">{{item.no}}</div>
+                <div class="list-item-name">{{item.name}}</div>
+                <div class="list-item-money">{{item.money}}</div>
+              </div>
+            </div>
+          </div>
         </div>
       </template>
     </el-card>
@@ -82,7 +97,94 @@
               picker.$emit('pick', [start, end])
             }
           }]
-        }
+        },
+        chartOption: {
+          title: {
+            text: '年度销售额',
+            color: '#666',
+            left: 25,
+            top: 20
+          },
+          xAxis: {
+            type: 'category',
+            data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+            // 调整小线的位置
+            axisTick: {
+              alignWithLabel: true,
+              lineStyle: {
+                color: '#999'
+              }
+            },
+            axisLine: {
+              lineStyle: {
+                color: '#999'
+              }
+            },
+            axisLabel: {
+              color: '#333'
+            }
+          },
+          yAxis: {
+            // 隐藏左侧Y轴line
+            axisLine: {
+              show: false
+            },
+            axisTick: {
+              show: false
+            },
+            // 横向分割线样式调整
+            splitLine: {
+              lineStyle: {
+                type: 'dotted',
+                color: '#eee'
+              }
+            }
+          },
+          series: [{
+            type: 'bar',
+            barWidth: '35%',
+            data: [200, 250, 300, 350, 300, 300, 350, 300, 300, 350, 300, 100]
+          }],
+          color: ['#3398DB'],
+          // grid只会影响图表位置，title则需要去title里面控制
+          grid: {
+            top: 70,
+            left: 60,
+            right: 60,
+            bottom: 50
+          }
+        },
+        rankData: [
+          {
+            no: 1,
+            name: '麦当劳',
+            money: '323,234'
+          }, {
+            no: 2,
+            name: '麦当劳',
+            money: '323,234'
+          }, {
+            no: 3,
+            name: '麦当劳',
+            money: '323,234'
+          }, {
+            no: 4,
+            name: '麦当劳',
+            money: '323,234'
+          }, {
+            no: 5,
+            name: '麦当劳',
+            money: '323,234'
+          }, {
+            no: 6,
+            name: '麦当劳',
+            money: '323,234'
+          }, {
+            no: 7,
+            name: '麦当劳',
+            money: '323,234'
+          }
+        ]
       }
     },
     methods: {
@@ -122,6 +224,73 @@
 
         .sales-view-date-picker {
           margin-left: 20px;
+        }
+      }
+    }
+
+    .sales-view-chart-wrapper {
+      display: flex;
+      height: 270px;
+
+      .echarts {
+        flex: 0 0 70%;
+        width: 70%;
+        height: 100%;
+      }
+
+      .sales-view-list {
+        flex: 1;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        margin-top: 15px;
+
+        .sales-view-title {
+          margin-top: 20px;
+          font-size: 12px;
+          font-weight: 500;
+          color: #666;
+        }
+
+        .list-item-wrapper {
+          margin-top: 15px;
+
+          .list-item {
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            height: 20px;
+            padding: 6px 20px 6px 0;
+
+            .list-item-no {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 20px;
+              height: 20px;
+              color: #333;
+
+              &.top-no {
+                /*制作top的黑色圆圈背景*/
+                background: #000;
+                border-radius: 50%;
+                color: #fff;
+                font-weight: 500;
+              }
+            }
+
+            .list-item-name {
+              margin-left: 10px;
+              color: #333;
+            }
+
+            .list-item-money {
+              /*把剩下布局占满*/
+              flex: 1;
+              text-align: right;
+            }
+
+          }
         }
       }
     }
