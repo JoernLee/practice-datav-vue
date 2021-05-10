@@ -54,7 +54,9 @@
           </div>
         </template>
         <template>
-          <v-chart :options="categoryOption"/>
+          <div class="chart-wrapper">
+            <v-chart :options="categoryOption"/>
+          </div>
         </template>
       </el-card>
     </div>
@@ -79,7 +81,7 @@
           series: [{
             // 需要实现一个平滑面积图
             type: 'line',
-            data: [100, 150, 200, 300, 150, 200, 250, 300, 150],
+            data: [100, 150, 200, 300, 150, 200, 250, 300, 150, 200, 300, 150, 100],
             areaStyle: {
               color: 'rgba(95,187,255,.5)'
             },
@@ -99,7 +101,10 @@
           }
         },
         searchNumberOption: {},
-        categoryOption: {},
+        categoryOption: {
+          // 饼图存在标题，中间有一个累计订单量title和数据，外围有一个环形图，而且是空心的
+          // 每一个块颜色不同，且鼠标移动有item数据展示
+        },
         radioSelect: null,
         tableData: [
           {
@@ -137,7 +142,123 @@
     methods: {
       onPageChange (page) {
         console.log(page)
+      },
+      renderPieChart () {
+        const mockData = [
+          {
+            legendname: '粉面粥店',
+            value: 67,
+            percent: '15.40%',
+            itemStyle: {
+              color: '#e7e702'
+            },
+            // 加入name之后就会出现legend了
+            name: '粉面粥店 | 15.40%'
+          }, {
+            legendname: '简餐便当',
+            value: 97,
+            percent: '22.30%',
+            itemStyle: {
+              color: '#8d7fec'
+            },
+            name: '简餐便当 | 22.30%'
+          }, {
+            legendname: '汉堡披萨',
+            value: 92,
+            percent: '21.15%',
+            itemStyle: {
+              color: '#5085f2'
+            },
+            name: '汉堡披萨 | 21.15%'
+          }
+        ]
+        this.categoryOption = {
+          title: [{
+            text: '品类分布',
+            textStyle: {
+              fontSize: 14,
+              color: '#666'
+            },
+            left: 20,
+            top: 20
+          }, {
+            // 加入环中间的title,挪位置
+            text: '累计订单量',
+            subtext: '320',
+            x: '34.5%',
+            y: '42.5%',
+            textAlign: 'center',
+            textStyle: {
+              fontSize: 14,
+              color: '#999'
+            },
+            subtextStyle: {
+              fontSize: 28,
+              color: '#333'
+            }
+          }],
+          // 饼图不需要坐标系
+          series: [{
+            type: 'pie',
+            data: mockData,
+            label: {
+              // 控制饼图沿线的文案
+              normal: {
+                show: true,
+                position: 'outter',
+                formatter: function (params) {
+                  return params.data.legendname
+                }
+              }
+            },
+            // 决定圆心位置，设置为宽度的对应百分比
+            center: ['35%', '50%'],
+            // 让圆变成空心，第一个元素是内半径，第二个元素是外半径，两个相减就是环宽度
+            // 对应百分比元素是容器宽高中值较小的
+            radius: ['45%', '60%'],
+            // 控制引线长度
+            labelLine: {
+              normal: {
+                length: 5,
+                length2: 3,
+                smooth: true
+              }
+            },
+            // 逆时针
+            clockwise: false,
+            // 实现块与块之间的间距
+            itemStyle: {
+              borderWidth: 4,
+              borderColor: '#fff'
+            }
+          }],
+          // 配置legend的样式和位置
+          legend: {
+            type: 'scroll',
+            orient: 'vertical',
+            height: 250,
+            left: '70%',
+            top: 'middle',
+            textStyle: {
+              color: '#8c8c8c'
+            }
+          },
+          tooltip: {
+            trigger: 'item',
+            // 定制展示信息
+            formatter: function (params) {
+              const str = params.seriesName + '<br/>' +
+                params.marker + params.data.legendname + '<br/>' +
+                '数量:' + params.data.value + '<br/>' +
+                '占比:' + params.data.percent
+              return str
+            }
+          }
+        }
       }
+    },
+    mounted () {
+      this.renderPieChart()
     }
   }
 </script>
