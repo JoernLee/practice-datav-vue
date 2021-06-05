@@ -9,7 +9,9 @@
           <div class="title">用户同比增长</div>
         </template>
         <template>
-          <div class="chart-wrapper">111</div>
+          <div class="chart-wrapper">
+            <liquid-fill/>
+          </div>
         </template>
       </el-card>
       <el-card shadow="hover">
@@ -28,10 +30,12 @@
 
 <script>
   import BMapScatter from '../BMapScatter'
+  import LiquidFill from '../LiquidFill'
 
   export default {
     components: {
-      BMapScatter
+      BMapScatter,
+      LiquidFill
     }
   }
 </script>
