@@ -19,9 +19,9 @@
           <div class="title">热门搜索</div>
         </template>
         <template>
-          <template>
-            <div class="chart-wrapper">111</div>
-          </template>
+          <div class="chart-wrapper">
+            <word-cloud/>
+          </div>
         </template>
       </el-card>
     </div>
@@ -31,11 +31,13 @@
 <script>
   import BMapScatter from '../BMapScatter'
   import LiquidFill from '../LiquidFill'
+  import WordCloud from '../WordCloud'
 
   export default {
     components: {
       BMapScatter,
-      LiquidFill
+      LiquidFill,
+      WordCloud
     }
   }
 </script>
