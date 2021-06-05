@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-<!--    驼峰变成-连接，这是vue规范，和react不同-->
+    <!--    驼峰变成-连接，这是vue规范，和react不同-->
     <top-view/>
     <sales-view/>
     <bottom-view/>
@@ -13,6 +13,7 @@
   import SalesView from '../components/SalesView'
   import BottomView from '../components/BottomView'
   import MapView from '../components/MapView'
+  import { mapScatter, screenData, wordcloud } from '../api'
 
   export default {
     name: 'Home',
@@ -21,7 +22,50 @@
       SalesView,
       BottomView,
       MapView
+    },
+    data () {
+      return {
+        reportData: null,
+        wordCloud: null,
+        mapData: null
+      }
+    },
+    methods: {
+      getReportData () {
+        return this.reportData
+      },
+      getWordCloud () {
+        return this.wordCloud
+      },
+      getMapData () {
+        return this.mapData
+      }
+    },
+    // 父组件通过provide来定义传递数据，子组件通过inject来进行接收
+    provide () {
+      return {
+        // 注意不能直接把数据传递传递过去，因为provide调用时机时还没有mounted，所以数据是空
+        // 这里可以把get方法传递过子组件以拿到数据
+        getReportData: this.getReportData,
+        getWordCloud: this.getWordCloud,
+        getMapData: this.getMapData
+        /* reportData: this.reportData,
+         wordCloud: this.wordCloud,
+         mapData: this.mapData */
+      }
+    },
+    mounted () {
+      screenData().then(data => {
+        this.reportData = data
+      })
+      wordcloud().then(data => {
+        this.wordCloud = data
+      })
+      mapScatter().then(data => {
+        this.mapData = data
+      })
     }
+
   }
 </script>
 

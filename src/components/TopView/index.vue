@@ -41,6 +41,8 @@
       TodayUsers,
       TotalUsers
     }
+    // 非需要数据的子组件不需要写provide
+    // provide:{}
   }
 </script>
 

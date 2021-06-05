@@ -28,13 +28,14 @@
 
 <script>
   import commonCardMixin from '../../mixins/commonCardMixin'
+  import commonDataMixin from '../../mixins/commonDataMixin'
 
   export default {
     // components: {
     //   CommonCard
     // }
     // 基于mixin机制重构下
-    mixins: [commonCardMixin]
+    mixins: [commonCardMixin, commonDataMixin]
   }
 </script>
 
