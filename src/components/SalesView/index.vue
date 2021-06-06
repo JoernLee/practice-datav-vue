@@ -61,7 +61,10 @@
 </template>
 
 <script>
+  import commonDataMixin from '../../mixins/commonDataMixin'
+
   export default {
+    mixins: [commonDataMixin],
     data () {
       return {
         activeIndex: '1',
@@ -187,9 +190,88 @@
         ]
       }
     },
+    computed: {
+      // 额外补充一个计算属性 - 需要一些逻辑
+      // 这里因为接口拿不到数据，暂时注释还是使用mock的data
+      /* rankData () {
+        return this.activeIndex === '1' ? this.orderRank : this.userRank
+      } */
+    },
+    watch: {
+      // watch特性可以监控状态变化
+      orderFullYear () {
+        this.render(this.orderFullYear, this.orderFullYearAxis, '年度销售额')
+      }
+    },
     methods: {
       onMenuSelect (index) {
         this.activeIndex = index
+        if (index === '1') {
+          this.render(this.orderFullYear, this.orderFullYearAxis, '年度销售额')
+        } else {
+          this.render(this.userFullYear, this.userFullYearAxis, '年度用户访问量')
+        }
+      },
+      render (data, axis, title) {
+        // 用于动态根据选择的不同Tab渲染图表
+        this.chartOption = {
+          title: {
+            text: title,
+            color: '#666',
+            left: 25,
+            top: 20
+          },
+          xAxis: {
+            type: 'category',
+            // data: axis,
+            data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+            // 调整小线的位置
+            axisTick: {
+              alignWithLabel: true,
+              lineStyle: {
+                color: '#999'
+              }
+            },
+            axisLine: {
+              lineStyle: {
+                color: '#999'
+              }
+            },
+            axisLabel: {
+              color: '#333'
+            }
+          },
+          yAxis: {
+            // 隐藏左侧Y轴line
+            axisLine: {
+              show: false
+            },
+            axisTick: {
+              show: false
+            },
+            // 横向分割线样式调整
+            splitLine: {
+              lineStyle: {
+                type: 'dotted',
+                color: '#eee'
+              }
+            }
+          },
+          series: [{
+            type: 'bar',
+            barWidth: '35%',
+            // data: data,
+            data: [200, 250, 300, 350, 300, 300, 350, 300, 300, 350, 300, 100]
+          }],
+          color: ['#3398DB'],
+          // grid只会影响图表位置，title则需要去title里面控制
+          grid: {
+            top: 70,
+            left: 60,
+            right: 60,
+            bottom: 50
+          }
+        }
       }
     }
   }
