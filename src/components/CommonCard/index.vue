@@ -19,7 +19,8 @@
     // 外部传入的参数
     props: {
       title: String,
-      value: String
+      // 需要同时支持两者，否则数据接入那边要改
+      value: [String, Number]
     }
   }
 </script>

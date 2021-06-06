@@ -1,17 +1,17 @@
 <template>
   <common-card
     title="累计用户数"
-    value="1,087,503">
+    :value="userToday">
     <template>
       <v-chart :options="getOptions()"/>
     </template>
     <template v-slot:footer>
       <div class="total-users-footer">
         <span>日同比 </span>
-        <span class="emphasis">8.73%</span>
+        <span class="emphasis">{{userGrowthLastDay}}</span>
         <div class="increase"/>
         <span class="month">月同比 </span>
-        <span class="emphasis">6.73%</span>
+        <span class="emphasis">{{userGrowthLastMonth}}</span>
         <div class="decrease"/>
       </div>
     </template>
@@ -20,9 +20,10 @@
 
 <script>
   import commonCardMixin from '../../mixins/commonCardMixin'
+  import commonDataMixin from '../../mixins/commonDataMixin'
 
   export default {
-    mixins: [commonCardMixin],
+    mixins: [commonCardMixin, commonDataMixin],
     methods: {
       getOptions () {
         return {
@@ -41,11 +42,14 @@
             type: 'category',
             show: false
           },
+          tooltip: {},
           series: [{
             type: 'bar',
+            name: '上月平台用户数',
             // 通过stack来进行相同series合并！
             stack: '总量',
             data: [200],
+            // data: [this.userLastMonth]
             barWidth: '10px',
             itemStyle: {
               color: '#45c946'
@@ -53,8 +57,10 @@
           }, {
             // 最终结果是左右两侧合并为的一个bar，存在两组数据
             type: 'bar',
+            name: '今月平台用户数',
             stack: '总量',
             data: [250],
+            // data: [this.userToday]
             // barWidth: '10px', 不用写两次同一个stack
             itemStyle: {
               color: '#eee'
@@ -64,6 +70,7 @@
             // 自定义series
             type: 'custom',
             data: [200],
+            // data: [this.userLastMonth]
             stack: '总量',
             // 自定义绘制
             renderItem: (params, api) => {

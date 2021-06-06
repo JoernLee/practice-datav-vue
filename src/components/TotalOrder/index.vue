@@ -1,26 +1,28 @@
 <template>
   <common-card
     title="累计订单量"
-    value="2,157,420"
+    :value="orderToday"
   >
     <template>
       <v-chart :options="getOptions()"/>
     </template>
     <template v-slot:footer>
       <span>昨日订单量 </span>
-      <span class="emphasis">2,000,000</span>
+      <span class="emphasis">{{orderLastDay}}</span>
     </template>
   </common-card>
 </template>
 
 <script>
   import commonCardMixin from '../../mixins/commonCardMixin'
+  import commonDataMixin from '../../mixins/commonDataMixin'
 
   export default {
-    mixins: [commonCardMixin],
+    mixins: [commonCardMixin, commonDataMixin],
     methods: {
       getOptions () {
-        return {
+        // 保证图表不会出现默认矩形
+        return this.orderTrend.length > 0 ? {
           xAxis: {
             // X轴需要一些配置，以实现需要的效果，并且不显示X轴数字
             type: 'category',
@@ -35,7 +37,7 @@
           // 一个系列就是一张图
           series: [{
             type: 'line',
-            data: [620, 432, 220, 534, 790, 430, 220, 320, 532, 320, 834, 690, 530, 220],
+            data: this.orderTrend,
             // 展示折现下面积
             areaStyle: {
               color: 'purple'
@@ -58,7 +60,7 @@
             left: 0,
             right: 0
           }
-        }
+        } : null
       }
     }
   }
