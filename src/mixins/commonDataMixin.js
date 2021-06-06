@@ -111,12 +111,18 @@ export default {
       return wrapperArray(this.reportData, 'userRank')
     },
     wordCloud () {
-      return this.wordCloud()
+      return this.getWordCloud()
     },
     mapData () {
       return this.mapData()
     }
 
   },
-  inject: ['getReportData', 'getWordCloud', 'getMapData']
+  inject: ['getReportData', 'getWordCloud', 'getMapData'],
+  methods: {
+    // 向外输出可用方法
+    format (v) {
+      return format(v)
+    }
+  }
 }

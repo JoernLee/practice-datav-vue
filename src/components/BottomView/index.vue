@@ -10,28 +10,29 @@
             <div class="chart-inner">
               <div class="chart">
                 <div class="chart-title">搜索用户数</div>
-                <div class="chart-data">93,634</div>
+                <div class="chart-data">{{userCount}}</div>
                 <v-chart :options="searchUserOption"/>
               </div>
               <div class="chart">
                 <div class="chart-title">搜索量</div>
-                <div class="chart-data">193,782</div>
+                <div class="chart-data">{{searchCount}}</div>
                 <!--                暂时换成一样的option，后面对接数据再分开-->
-                <v-chart :options="searchUserOption"/>
+                <v-chart :options="searchNumberOption"/>
               </div>
             </div>
             <div class="table-wrapper">
               <el-table :data="tableData">
-                <el-table-column prop="rank" label="排名" width="180px"/>
+                <el-table-column prop="rank" label="排名" width="100px"/>
                 <el-table-column prop="keyword" label="关键词"/>
                 <el-table-column prop="count" label="总搜索量"/>
                 <el-table-column prop="users" label="搜索用户数"/>
+                <el-table-column prop="range" label="搜索占比"/>
               </el-table>
               <!--            翻页器，目前先优化下样式-->
               <el-pagination
                 layout="prev,pager,next"
-                :page-count="100"
-                :page-size="4"
+                :total="total"
+                :page-size="pageSize"
                 background
                 @current-change="onPageChange"
               />
@@ -64,84 +65,31 @@
 </template>
 
 <script>
+  import commonDataMixin from '../../mixins/commonDataMixin'
+
   export default {
+    mixins: [commonDataMixin],
     data () {
       return {
-        searchUserOption: {
-          xAxis: {
-            type: 'category',
-            boundaryGap: false
-          },
-          yAxis: {
-            show: false,
-            // 设置最大Y轴数值范围，防止超过可显示范围
-            min: 0,
-            max: 350
-          },
-          series: [{
-            // 需要实现一个平滑面积图
-            type: 'line',
-            data: [100, 150, 200, 300, 150, 200, 250, 300, 150, 200, 300, 150, 100],
-            areaStyle: {
-              color: 'rgba(95,187,255,.5)'
-            },
-            lineStyle: {
-              color: 'rgb(95,187,255)'
-            },
-            itemStyle: {
-              opacity: 0
-            },
-            smooth: true
-          }],
-          grid: {
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0
-          }
-        },
+        searchUserOption: {},
         searchNumberOption: {},
         categoryOption: {
           // 饼图存在标题，中间有一个累计订单量title和数据，外围有一个环形图，而且是空心的
           // 每一个块颜色不同，且鼠标移动有item数据展示
         },
         radioSelect: null,
-        tableData: [
-          {
-            id: 1,
-            rank: 1,
-            keyword: '北京',
-            count: 100,
-            users: 90,
-            range: '90%'
-          }, {
-            id: 2,
-            rank: 2,
-            keyword: '北京',
-            count: 100,
-            users: 90,
-            range: '90%'
-          }, {
-            id: 3,
-            rank: 3,
-            keyword: '北京',
-            count: 100,
-            users: 90,
-            range: '90%'
-          }, {
-            id: 4,
-            rank: 4,
-            keyword: '北京',
-            count: 100,
-            users: 90,
-            range: '90%'
-          }
-        ]
+        tableData: [],
+        totalData: [],
+        total: 100, // 总数据量
+        pageSize: 4, // 一页数据量
+        userCount: 0,
+        searchCount: 0
       }
     },
     methods: {
       onPageChange (page) {
         console.log(page)
+        this.renderTable(page)
       },
       renderPieChart () {
         const mockData = [
@@ -255,10 +203,88 @@
             }
           }
         }
+      },
+      renderTable (page) {
+        // 动态更新tableData的值 - 截断总的数据，根据当前分页号page动态获取slice范围
+        this.tableData = this.totalData.slice(
+          (page - 1) * this.pageSize,
+          (page - 1) * this.pageSize + this.pageSize
+        )
+      },
+      renderLineChart () {
+        // 根据数据动态生成linechart的数据源
+        const createOption = (key) => {
+          const data = []
+          const axis = []
+          this.wordCloud.forEach(item => data.push(item[key]))
+          this.wordCloud.forEach(item => axis.push(item.word))
+          return {
+            tooltip: {},
+            xAxis: {
+              type: 'category',
+              boundaryGap: false,
+              data: axis
+            },
+            yAxis: {
+              show: false
+            },
+            series: [{
+              // 需要实现一个平滑面积图
+              type: 'line',
+              data: data,
+              areaStyle: {
+                color: 'rgba(95,187,255,.5)'
+              },
+              lineStyle: {
+                color: 'rgb(95,187,255)'
+              },
+              itemStyle: {
+                opacity: 0
+              },
+              smooth: true
+            }],
+            grid: {
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0
+            }
+          }
+        }
+        this.searchUserOption = createOption('users')
+        this.searchNumberOption = createOption('count')
       }
     },
     mounted () {
       this.renderPieChart()
+    },
+    watch: {
+      wordCloud () {
+        console.log('wordcloud', this.wordCloud)
+        // 遍历接口返回的wordCloud数据并适配出原先列表的mock数据规范
+        const totalData = []
+        this.wordCloud.forEach((item, index) => {
+          totalData.push({
+            id: index + 1,
+            rank: index + 1,
+            keyword: item.word,
+            count: item.count,
+            users: item.users,
+            range: `${((item.users / item.count) * 100).toFixed(2)}%`
+          })
+        })
+        this.totalData = totalData
+        // 用于给pagination计算分页数量
+        this.total = this.totalData.length
+        console.log(this.totalData)
+        // 进行翻页处理给表格
+        this.renderTable(1)
+        // 累加器来计算两个count - 千分号处理
+        // format是mixins的method提供
+        this.userCount = this.format(totalData.reduce((s, i) => i.users + s, 0))
+        this.searchCount = this.format(totalData.reduce((s, i) => i.count + s, 0))
+        this.renderLineChart()
+      }
     }
   }
 </script>

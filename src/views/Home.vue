@@ -60,6 +60,40 @@
       })
       wordcloud().then(data => {
         this.wordCloud = data
+        // 继续mock一些数据
+        this.wordCloud = [{
+          word: '北京',
+          users: 879,
+          count: 1002
+        }, {
+          word: '上海',
+          users: 432,
+          count: 756
+        }, {
+          word: '南京',
+          users: 999,
+          count: 1345
+        }, {
+          word: '飞天德',
+          users: 123,
+          count: 400
+        }, {
+          word: '鸣人',
+          users: 453,
+          count: 875
+        }, {
+          word: '上',
+          users: 1320,
+          count: 1500
+        }, {
+          word: '搜索',
+          users: 888,
+          count: 900
+        }, {
+          word: '测试',
+          users: 645,
+          count: 854
+        }]
       })
       mapScatter().then(data => {
         this.mapData = data
