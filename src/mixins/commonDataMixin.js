@@ -41,6 +41,20 @@ function wrapperArray (o, k) {
   return o && o[k] ? o[k] : [620, 432, 220, 534, 790, 430, 220, 320, 532, 320, 834, 690, 530, 220]
 }
 
+function wrapperObject (o, k) {
+  // 支持连接的k
+  if (o && k.indexOf('.') >= 0) {
+    const keys = k.split('.')
+    // 循环拿到o[key][key]...
+    keys.forEach(key => {
+      o = o[key]
+    })
+    return o
+  } else {
+    return o && o[k] ? o[k] : {}
+  }
+}
+
 // 封装子组件获取父组件Data的属性和方法
 export default {
   computed: {
@@ -112,6 +126,14 @@ export default {
     },
     wordCloud () {
       return this.getWordCloud()
+    },
+    // 分类数据
+    category1 () {
+      return wrapperObject(this.reportData, 'category.data1')
+    },
+    // 商品数据
+    category2 () {
+      return wrapperObject(this.reportData, 'category.data2')
     },
     mapData () {
       return this.mapData()

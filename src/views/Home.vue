@@ -57,6 +57,18 @@
     mounted () {
       screenData().then(data => {
         this.reportData = data
+        this.reportData = {
+          category: {
+            data1: {
+              axisX: ['粉面粥店', '简餐便当', '汉堡披萨', '香锅冒菜'],
+              data1: [26, 45, 32, 20]
+            },
+            data2: {
+              axisX: ['草莓', '甘蔗', '榴莲', '菠萝'],
+              data1: [26, 45, 29, 61]
+            }
+          }
+        }
       })
       wordcloud().then(data => {
         this.wordCloud = data
