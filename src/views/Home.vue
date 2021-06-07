@@ -67,7 +67,9 @@
               axisX: ['草莓', '甘蔗', '榴莲', '菠萝'],
               data1: [26, 45, 29, 61]
             }
-          }
+          },
+          userGrowthLastMonth: '27.84',
+          userGrowthLastDay: '16.51'
         }
       })
       wordcloud().then(data => {

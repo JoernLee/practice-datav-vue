@@ -10,6 +10,8 @@
 
 <script>
 
+  import commonDataMixin from '../../mixins/commonDataMixin'
+
   const testPoint = [{
     name: '海门',
     // 经纬度，销售额
@@ -31,6 +33,7 @@
   }]
 
   export default {
+    mixins: [commonDataMixin],
     data () {
       return {
         chartSettings: {
@@ -108,6 +111,12 @@
           }
         ],
         tooltip: {}
+      }
+    },
+    watch: {
+      mapData () {
+        /* // 监听mapData的变化 - 这里我们暂时还是使用mock数据
+        const { data, geo } = this.mapData */
       }
     }
   }

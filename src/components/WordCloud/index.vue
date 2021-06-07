@@ -3,28 +3,29 @@
 </template>
 
 <script>
+  import commonDataMixin from '../../mixins/commonDataMixin'
+
   export default {
+    mixins: [commonDataMixin],
+    watch: {
+      wordCloud () {
+        // 更新chartData
+        const data = []
+        this.wordCloud.forEach(item => {
+          data.push({
+            name: item.word,
+            value: item.count
+          })
+        })
+        this.chartData = {
+          columns: ['name', 'value'],
+          rows: data
+        }
+      }
+    },
     data () {
       return {
-        chartData: {
-          columns: ['name', 'value'],
-          rows: [{
-            name: '慕课网',
-            value: 80
-          }, {
-            name: '数据可视化',
-            value: 50
-          }, {
-            name: '我是demo',
-            value: 30
-          }, {
-            name: '数据可视化2',
-            value: 40
-          }, {
-            name: '我是demo3',
-            value: 80
-          }]
-        }
+        chartData: {}
       }
     }
   }
